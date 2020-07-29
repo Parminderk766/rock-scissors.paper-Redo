@@ -1,26 +1,80 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {Component} from 'react';
+import PlayerCard from './PlayerCard';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class Game extends Component {
+  constructor(){
+    super();
+    this.signs = ['rock', 'scissors', 'paper']
+    this.state = {
+      playerOne: 'rock',
+      playerTwo: 'rock',
+      madeChoice: true,
+      pickCard: () => {
+    if(this.state.madeChoice){
+      return(
+        <div className='player1'>
+          <h1>You</h1>
+          <button type='button' onClick={() => this.playGame('rock')}>Rock</button>
+          <button type='button' onClick={() => this.playGame('paper')}>Paper</button>
+          <button type='button' onClick={() => this.playGame('scissors')}>Scissors</button>
+        </div>
+      )
+    }
+    if(!this.state.madeChoice){
+      return(
+        <div className='player1'>
+          <h1>You Picked</h1>
+          <PlayerCard sign={this.state.playerOne}></PlayerCard>
+        </div>
+    )
+    }
+  }
+    }
+  }
+
+  playGame = (choice) => {
+
+    this.setState({
+      playerOne: (choice !== undefined) ? choice : this.signs[Math.floor(Math.random() * 3)],
+      playerTwo: this.signs[Math.floor(Math.random() * 3)],
+      madeChoice: !this.state.madeChoice,
+    })
+  }
+
+  decideWinner = () => {
+    const {playerOne, playerTwo} = this.state;
+    let who = '';
+    if(playerOne === 'rock' && playerTwo === 'scissors'){
+      who = 'You Won';
+    } else if(playerOne === 'scissors' && playerTwo === 'paper'){
+      who = 'You Won';
+    } else if(playerOne === 'paper' && playerTwo === 'rock'){
+      who = 'You Won';
+    } else if(playerOne === playerTwo){
+      who = 'Its a Tie';
+    } else {
+      who = 'Player 2 Wins';
+    }
+    return who;
+  }
+
+  
+
+  render() {
+    return(
+      <div>
+        <div className='players'>
+          {this.state.pickCard()}
+          <div className='player2'>
+            <h1>Player 2</h1>
+            <PlayerCard sign={this.state.playerTwo}></PlayerCard>
+          </div>
+        </div>
+        <div className='winner'><h1>{this.decideWinner()}</h1></div>
+        <button type='button' onClick={this.playGame}>Play the Game</button>
+      </div>
+    )
+  }
 }
 
-export default App;
+export default Game;
